@@ -1,0 +1,10 @@
+# ignore intermediate pickles and dataset, images
+*.pkl
+*.pth
+*.png
+*.gif
+
+# ignore local folders
+/.vscode/
+/results/
+/venv/
