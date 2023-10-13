@@ -6,8 +6,9 @@ from tqdm.auto import tqdm
 from ..utils.constants import default_device, timesteps, default_training_epochs, default_learning_rate, default_batch_size, default_training_tolerance
 from ..noise.diffusion import q_sample
 from ..models.model import Advanced_Regression
-from ..dataset.mydataset import prepare_dataset
 from ..models.utils import save_model, load_model
+from ..dataset.utils import prepare_dataset
+from .. dataset.imgtools import transform
 # for testing
 from ..utils.helper import record_time
 
@@ -27,12 +28,12 @@ def train_MLP(filename = None, num_epochs = None, lr = None, batch_size = None, 
         tolerance = default_training_tolerance
 
     # init model
-    model = Advanced_Regression().to(default_device)
+    model = Advanced_Regression(layer_dim=256).to(default_device)
 
     # init data and test loader for input
     if batch_size is None:
         batch_size = default_batch_size
-    train_loader, test_loader = prepare_dataset(batch_size=batch_size)
+    train_loader, test_loader = prepare_dataset(batch_size=batch_size, transform=transform)
 
     # Define the loss function (Mean Squared Error) and the optimizer (e.g., SGD)
     criterion = nn.MSELoss()
@@ -184,8 +185,9 @@ def train_MLP(filename = None, num_epochs = None, lr = None, batch_size = None, 
     print('training finished')
 
 from torch.utils.data import DataLoader
-from modules.dataset.mydataset import train_images, Single_Image_Dataset
-from modules.dataset.imgtools import transform
+from ..dataset.utils import dataset
+from ..dataset.imgtools import transform
+from ..dataset.testdataset import Single_Image_Dataset
 
 # test the power of the model, whether model can overfit on 1 image during training
 def test_power_training():
@@ -199,7 +201,7 @@ def test_power_training():
     model = Advanced_Regression().to(default_device)
 
     # input 1 image
-    test_image = transform(train_images[0]).to(default_device)
+    test_image = transform(dataset['train']['image'][0]).to(default_device)
 
     # ? generate all noise levels of image
     batch_size = timesteps
