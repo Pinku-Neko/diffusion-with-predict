@@ -1,12 +1,23 @@
+'''
+verify the ability of model using plots
+'''
+
 from numpy import zeros
+import random
 from matplotlib import pyplot as plt
-from torch import tensor
+from torch import tensor, arange
 from ..utils.constants import timesteps, default_device
-from ..dataset.mydataset import train_images
+from ..dataset.mydataset import dataset
 from ..dataset.imgtools import transform
 from ..noise.diffusion import q_sample
 
 def evaluate_regression(regression):
+    '''
+    evaluate the regression model by plotting samples with predict error \n
+    1. draw n samples from the dataset \n
+    2. make timesteps * n array \n
+    3. for each
+    '''
     # draw 3 samples, each from 0 to 199
     # make 3 inputs
     # make 200 * 3 array
@@ -16,31 +27,29 @@ def evaluate_regression(regression):
     num_samples = 20
 
     # indices for image samples
-    import random
     indices = random.sample(range(0,60000), num_samples)
 
     # transform into distributions
-    inputs = [transform(train_images[index]) for index in indices]
+    image_tensors = [transform(dataset['train']['image'][index]) for index in indices]
 
     # results as nd array
     result = zeros((timesteps,num_samples))
 
-    for t in range(timesteps):
-        for i in range(num_samples):
-            # gather input distribution
-            input = inputs[i]
+    for i in range(num_samples):
+        # gather input distribution
+        input = image_tensors[i].repeat(timesteps,1,1)
 
-            # time
-            time = tensor([t]).to(default_device)
+        # time
+        time = arange(start=0, end=timesteps)
 
-            # calculate noise
-            noise = q_sample(input.to(default_device),time)
-            
-            # pass to model
-            predict = regression(noise) * timesteps
+        # calculate noise
+        noise = q_sample(input.to(default_device),time)
+        
+        # pass to model
+        predict = regression(noise) * timesteps
 
-            # store difference
-            result[t][i] = predict - t
+        # store difference
+        result[:,i] = predict - time
 
     # draw samples
     for i in range(num_samples):

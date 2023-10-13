@@ -1,20 +1,30 @@
-# does training
+'''
+training
+'''
 from torch import nn, optim, randint, no_grad, sqrt, arange
 from tqdm.auto import tqdm
-from ..utils.constants import default_device, timesteps, default_training_epochs, default_learning_rate, default_batch_size
+from ..utils.constants import default_device, timesteps, default_training_epochs, default_learning_rate, default_batch_size, default_training_tolerance
 from ..noise.diffusion import q_sample
 from ..models.model import Advanced_Regression
-from ..models.utils import save_model, load_model # load to be used
 from ..dataset.mydataset import prepare_dataset
+from ..models.utils import save_model, load_model
 # for testing
 from ..utils.helper import record_time
 
-def train_MLP(filename = None, MLP_epochs = None, lr = None, batch_size = None):
+def train_MLP(filename = None, num_epochs = None, lr = None, batch_size = None, tolerance = None):
+    '''
+    -filename: name of model if to be loaded for resuming training \n
+    -num_epochs: number of epochs to be trained \n
+    -lr: learning rate for training \n
+    -batch_size: maximal batch size in data loader \n
+    -tolerance: how many failures accepted for early stopping
+    '''
     # variables for training optimization
     previous_loss = 1024. # TODO: find better number
     improvement_threshold = 0
     no_improvement_count = 0
-    tolerance = 10
+    if tolerance is None:
+        tolerance = default_training_tolerance
 
     # init model
     model = Advanced_Regression().to(default_device)
@@ -37,11 +47,11 @@ def train_MLP(filename = None, MLP_epochs = None, lr = None, batch_size = None):
         model, old_epoch, previous_loss = load_model(model=model,filename=filename)
     best_loss = previous_loss
 
-    if MLP_epochs is None:
-        MLP_epochs = default_training_epochs
+    if num_epochs is None:
+        num_epochs = default_training_epochs
     
     # train loop
-    for epoch in tqdm(range(MLP_epochs)):
+    for epoch in tqdm(range(num_epochs)):
         total_train_loss = 0.
         for step, image_samples in enumerate(train_loader):
             # in case each sample has different size
@@ -97,9 +107,10 @@ def train_MLP(filename = None, MLP_epochs = None, lr = None, batch_size = None):
 
             # convert MSE back into time step error
             error_timestep = round(sqrt(avg_train_loss * (timesteps ** 2)).item(),ndigits=2)
-            if step % 20 == 0:
+            if step % 100 == 0:
                 print(f"{step} step trained. Loss in time step: {error_timestep}; True loss: {avg_train_loss}")
 
+        print(f"{step} step trained. Loss in time step: {error_timestep}; True loss: {avg_train_loss}")
         # evaluate model using test dataset in this epoch
         test_loss = 0.
 
@@ -170,7 +181,6 @@ def train_MLP(filename = None, MLP_epochs = None, lr = None, batch_size = None):
         previous_loss = avg_test_loss # reset loss
         best_loss = min(avg_test_loss,best_loss)
             
-    save_model(model=model,epoch_number=old_epoch+epoch,loss=test_loss.item())
     print('training finished')
 
 from torch.utils.data import DataLoader
@@ -272,8 +282,3 @@ def test_power_training():
 
     save_model(model=model,epoch_number=epoch,loss=loss.item())
     print('training finished')
-
-
-    # if loss can be 0, or < 6.25e-6, then successful
-    # otherwise output failure
-    pass

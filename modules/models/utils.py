@@ -1,15 +1,24 @@
-# model manipulation
+'''
+handles model manipulation
+'''
 
+# reading file, IO disk
 import re
 from torch import save, load
 
+# init models
 from .components import Unet,unet_output_dim
 from .model import Advanced_Regression
-from ..dataset.mydataset import image_size
-from ..utils.constants import default_device
+from ..utils.constants import image_size,default_device
 
 
 def save_model(model, epoch_number, loss):
+    '''
+    save a model with its epoch number and loss as pickle file \n
+    model: the model trained \n
+    epoch_number: the epoch it is trained \n
+    loss: the loss calculated \n
+    '''
     rounded_loss = round(loss, 6)
     filename = f'./saved_models/regression_epoch_{epoch_number}_loss_{rounded_loss}.pth'
     save(model.state_dict(), filename)
@@ -17,12 +26,19 @@ def save_model(model, epoch_number, loss):
 
 
 def load_model(model, filename):
+    '''
+    read a file from disk and read epoch and loss for resuming \n
+    model: the model trained. Required to identify the structure of model \n
+    filename: the name of file in disk \n
+    return: model, epoch number and loss
+    '''
     # Use regular expressions to extract the epoch number from the filename
     match = re.search(r'epoch_(\d+)_loss_([\d.]+)\.pth', filename)
 
     if match:
         epoch_number = int(match.group(1))
         loss = float(match.group(2))
+
         # Load the model weights
         checkpoint = load(filename)
         model.load_state_dict(checkpoint)
@@ -30,18 +46,22 @@ def load_model(model, filename):
         print(f"Loaded model from {filename} with epoch {epoch_number}")
         return model, epoch_number, loss
     else:
-        raise ValueError("Filename does not match the expected pattern")
+        raise ValueError("Filename does not match the expected pattern \n Expected: epoch_int_loss_float")
 
 
-def init_models():
-    # init model
+def init_models(regression_layer_dim):
+    '''
+    init model
+    -regression_layer_dim: layer_dim of linear layer in regression model \n
+    -return: blank unet model and unet+mlp regression model, in device
+    '''
     diffusion = Unet(
         dim=image_size,
         channels=1,  # here 1 as it is greyscale
         dim_mults=(1, 2, 4,))
 
     # Create an instance of the MLP model
-    regression = Advanced_Regression()
+    regression = Advanced_Regression(layer_dim=regression_layer_dim)
 
     # move to device
     diffusion, regression = diffusion.to(

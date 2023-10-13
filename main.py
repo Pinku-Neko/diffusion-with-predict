@@ -7,12 +7,11 @@ def main():
     diffusion_name = "diffusion_epoch_0_loss_0.0357.pth"
 
     # filename regression
-    regression_name = "regression_epoch_50_loss_0.000707.pth"
-
+    regression_name = "./saved_models/regression_epoch_232_loss_0.000642.pth"
 
     # do training
-    # from modules.train import training
-    # training.train_MLP(lr = 1e-4, batch_size = 500)
+    from modules.train import training
+    training.train_MLP(filename=regression_name,lr = 5e-6, batch_size= 750, tolerance= 30)
 
     # do test
     # training.test_power_training()

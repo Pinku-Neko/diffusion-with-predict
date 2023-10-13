@@ -1,4 +1,6 @@
-# helper functions and Neural Networks for Neural Networks in practice
+'''
+helper functions and Neural Networks for Neural Networks in practice
+'''
 
 from inspect import isfunction
 import torch
@@ -329,5 +331,5 @@ class Unet(nn.Module):
 
         return self.final_conv(x)
 
-
+# FIXME:hard coded, need to be adjusted
 unet_output_dim = 1*112*7*7
