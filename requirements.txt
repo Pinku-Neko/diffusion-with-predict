@@ -1,0 +1,6 @@
+einops
+tqdm
+torch 
+matplotlib
+datasets
+torchvision
