@@ -4,10 +4,10 @@ def main():
     # get previous diffusion model
 
     # filename diffusion
-    diffusion_name = "diffusion_epoch_0_loss_0.0357.pth"
+    diffusion_name = "diffusion_epoch_0_loss_0.0357.pt"
 
     # filename regression
-    regression_name = "./saved_models/regression_best_256_0.0001.pth"
+    regression_name = "./saved_models/regression_best_256_0.0001.pt"
 
     # do training
     from modules.train import training

@@ -13,7 +13,7 @@ def save_model(model, layer_dim, lr):
     '''
     # overwrite instead
     # filename = f'./saved_models/regression_epoch_{epoch_number}_loss_{rounded_loss}.pth'
-    filename = f'./saved_models/regression_best_{layer_dim}_{lr}.pth'
+    filename = f'./saved_models/regression_best_{layer_dim}_{lr}.pt'
     save(model.state_dict(), filename)
 
 
