@@ -55,7 +55,7 @@ def train_MLP(filename = None, num_epochs = None, layer_dim = None, lr = None, b
         num_epochs = default_training_epochs
     
     # train loop
-    for epoch in tqdm(range(num_epochs)):
+    for epoch in tqdm(range(num_epochs),desc=f"dim: {layer_dim}; lr: {lr}"):
         print(f"layer dim: {layer_dim}. lr: {lr}")
         total_train_loss = 0.
         for step, image_samples in enumerate(train_loader):
@@ -90,11 +90,6 @@ def train_MLP(filename = None, num_epochs = None, layer_dim = None, lr = None, b
             loss = criterion(outputs, t_samples)
             # t = record_time("compute loss",t)
 
-            # move back to cpus, if in cuda
-            # image_samples, t_samples = image_samples.to(
-            #     'cpu'), t_samples.to('cpu')
-            # t = record_time("move to cpu",t)
-
             # Backpropagation and optimization
             optimizer.zero_grad()
             # t = record_time("reset grad",t)
@@ -103,9 +98,6 @@ def train_MLP(filename = None, num_epochs = None, layer_dim = None, lr = None, b
             optimizer.step()
             # t = record_time("back propagation",t)
 
-            # update scheduler
-            # scheduler.step()
-
             # measure loss
             total_train_loss += loss
             avg_train_loss = total_train_loss / (step+1)
@@ -113,7 +105,7 @@ def train_MLP(filename = None, num_epochs = None, layer_dim = None, lr = None, b
             # convert MSE back into time step error
             error_timestep = round(sqrt(avg_train_loss * (timesteps ** 2)).item(),ndigits=2)
             if step % 100 == 0:
-                print(f"{step} step trained. Loss in time step: {error_timestep}; True loss: {avg_train_loss}")
+                print(f"{step} steps trained. Loss in time step: {error_timestep}; True loss: {avg_train_loss}")
 
         print(f"{step} step trained. Loss in time step: {error_timestep}; True loss: {avg_train_loss}")
         # evaluate model using test dataset in this epoch
@@ -159,12 +151,6 @@ def train_MLP(filename = None, num_epochs = None, layer_dim = None, lr = None, b
         print(f'improvement: {improvement}')
 
         # early stopping
-        # manual adjust learning rate: no more needed, as there is scheduler
-        # if test_loss < 2.5e-3:
-        #   optimizer = torch.optim.Adam(model.parameters(), lr=1e-4)
-        # if test_loss < 2.5e-6:
-        #   optimizer = torch.optim.Adam(model.parameters(), lr=1e-5)
-        
         if (improvement<improvement_threshold):
             # no improvement
             no_improvement_count += 1
