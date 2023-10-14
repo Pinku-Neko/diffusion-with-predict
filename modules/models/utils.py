@@ -12,17 +12,17 @@ from .model import Advanced_Regression
 from ..utils.constants import image_size,default_device
 
 
-def save_model(model, epoch_number, loss):
+def save_model(model, layer_dim, lr):
     '''
     save a model with its epoch number and loss as pickle file \n
     model: the model trained \n
     epoch_number: the epoch it is trained \n
     loss: the loss calculated \n
     '''
-    rounded_loss = round(loss, 6)
-    filename = f'./saved_models/regression_epoch_{epoch_number}_loss_{rounded_loss}.pth'
+    # overwrite instead
+    # filename = f'./saved_models/regression_epoch_{epoch_number}_loss_{rounded_loss}.pth'
+    filename = f'./saved_models/regression_best_{layer_dim}_{lr}.pth'
     save(model.state_dict(), filename)
-    print(f'save as {filename}')
 
 
 def load_model(model, filename):

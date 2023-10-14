@@ -3,7 +3,7 @@ training
 '''
 from torch import nn, optim, randint, no_grad, sqrt, arange
 from tqdm.auto import tqdm
-from ..utils.constants import default_device, timesteps, default_training_epochs, default_learning_rate, default_batch_size, default_training_tolerance
+from ..utils.constants import default_device, timesteps, default_training_epochs, default_layer_dim, default_learning_rate, default_batch_size, default_training_tolerance
 from ..noise.diffusion import q_sample
 from ..models.model import Advanced_Regression
 from ..models.utils import save_model, load_model
@@ -12,7 +12,7 @@ from .. dataset.imgtools import transform
 # for testing
 from ..utils.helper import record_time
 
-def train_MLP(filename = None, num_epochs = None, lr = None, batch_size = None, tolerance = None):
+def train_MLP(filename = None, num_epochs = None, layer_dim = None, lr = None, batch_size = None, tolerance = None):
     '''
     -filename: name of model if to be loaded for resuming training \n
     -num_epochs: number of epochs to be trained \n
@@ -27,8 +27,11 @@ def train_MLP(filename = None, num_epochs = None, lr = None, batch_size = None, 
     if tolerance is None:
         tolerance = default_training_tolerance
 
+    if layer_dim is None:
+        layer_dim = default_layer_dim
+
     # init model
-    model = Advanced_Regression(layer_dim=256).to(default_device)
+    model = Advanced_Regression(layer_dim=layer_dim).to(default_device)
 
     # init data and test loader for input
     if batch_size is None:
@@ -53,6 +56,7 @@ def train_MLP(filename = None, num_epochs = None, lr = None, batch_size = None, 
     
     # train loop
     for epoch in tqdm(range(num_epochs)):
+        print(f"layer dim: {layer_dim}. lr: {lr}")
         total_train_loss = 0.
         for step, image_samples in enumerate(train_loader):
             # in case each sample has different size
@@ -171,7 +175,7 @@ def train_MLP(filename = None, num_epochs = None, lr = None, batch_size = None, 
         
         # store best loss
         if avg_test_loss < best_loss :
-            save_model(model=model,epoch_number=old_epoch+epoch,loss=avg_test_loss.item())
+            save_model(model=model,layer_dim=layer_dim,lr=lr)
         
         # reach desired loss
         if avg_test_loss <= 6.25e-6:

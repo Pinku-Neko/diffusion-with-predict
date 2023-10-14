@@ -10,8 +10,9 @@ def main():
     regression_name = "./saved_models/regression_best_256_0.0001.pth"
 
     # do training
-    # from modules.train import training
-    # training.train_MLP(filename=regression_name,lr = 5e-6, batch_size= 750, tolerance= 30)
+    from modules.train import training
+    training.train_MLP(filename=regression_name, num_epochs=2000,layer_dim=256,
+                        lr = 1e-4, batch_size= 128, tolerance=2000)
 
     # do test
     # training.test_power_training()
