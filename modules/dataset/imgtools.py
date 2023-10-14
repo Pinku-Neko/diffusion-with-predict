@@ -4,7 +4,6 @@ manipulates images
 
 from torchvision.transforms import Compose, Resize, CenterCrop, ToTensor, Lambda, ToPILImage
 from torch import clamp, uint8
-from ..noise.denoising import p_sample
 from ..utils.constants import image_size
 
 
@@ -33,20 +32,3 @@ reverse_transform = Compose([
     ToPILImage(),
 ])
 
-def get_noisy_image(image, t):
-    '''
-    adds gaussian noise given level to an image \n
-    -image: PIL image \n
-    -t: tensor shape (1) \n
-    -return: noisy image in PIL
-    '''
-    # transform to distributions
-    x_start = transform(img=image)
-
-    # add noise
-    x_noisy = p_sample(x_start, t=t)
-
-    # turn back into PIL image
-    noisy_image = reverse_transform(x_noisy)
-
-    return noisy_image
