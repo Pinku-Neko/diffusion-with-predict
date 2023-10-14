@@ -27,26 +27,16 @@ def save_model(model, epoch_number, loss):
 
 def load_model(model, filename):
     '''
-    read a file from disk and read epoch and loss for resuming \n
+    read a file from disk \n
     model: the model trained. Required to identify the structure of model \n
     filename: the name of file in disk \n
-    return: model, epoch number and loss
+    return: model
     '''
-    # Use regular expressions to extract the epoch number from the filename
-    match = re.search(r'epoch_(\d+)_loss_([\d.]+)\.pth', filename)
-
-    if match:
-        epoch_number = int(match.group(1))
-        loss = float(match.group(2))
-
-        # Load the model weights
-        checkpoint = load(filename)
-        model.load_state_dict(checkpoint)
-
-        print(f"Loaded model from {filename} with epoch {epoch_number}")
-        return model, epoch_number, loss
-    else:
-        raise ValueError("Filename does not match the expected pattern \n Expected: epoch_int_loss_float")
+    # Load the model weights
+    checkpoint = load(filename)
+    model.load_state_dict(checkpoint)
+    print(f"Loaded model from {filename}")
+    return model
 
 
 def init_models(regression_layer_dim):
