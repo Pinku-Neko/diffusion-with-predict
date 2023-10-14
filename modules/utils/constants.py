@@ -5,7 +5,8 @@ FIXME: consider using json config file to store (part of) these
 
 import torch
 import torch.nn.functional as F
-from modules.dataset.mydataset import dataset
+from .helper import generate_custom_array
+from ..dataset.mydataset import dataset
 
 # total amount of time steps in diffusion
 timesteps = 200
@@ -27,6 +28,9 @@ default_learning_rate = 1e-4
 
 # training tolerance for early stopping
 default_training_tolerance = 10
+
+# default weights for special MES loss
+default_MSE_weights = generate_custom_array(1,0.5,50,timesteps,normalize=True)
 
 # image size, an int value
 # selection for finding image_size. Assume all images are same size and square
