@@ -19,6 +19,9 @@ default_batch_size = 100
 # training epochs
 default_training_epochs = 1000
 
+# default regression layer dim
+default_layer_dim = 128
+
 # learning rate
 default_learning_rate = 1e-4
 
