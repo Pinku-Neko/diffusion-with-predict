@@ -1,4 +1,5 @@
-from modules.dataset.imgtools import reverse_transform, transform
+from modules.images.transforms import reverse_transform
+from modules.images.transforms import transform
 from modules.noise.diffusion import q_sample
 
 

@@ -10,7 +10,7 @@ from ..models.model import Advanced_Regression
 from ..models.IO import save_model, load_model
 from ..models.loss import weighted_MSE_loss
 from ..dataset.utils import prepare_dataset
-from ..dataset.imgtools import transform
+from ..images.transforms import transform
 
 # for testing model
 from torch.utils.data import DataLoader

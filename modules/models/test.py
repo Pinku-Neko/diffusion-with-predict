@@ -9,7 +9,7 @@ import torch
 from tqdm.auto import tqdm
 from ..utils.constants import timesteps, default_device
 from ..dataset.mydataset import dataset
-from ..dataset.imgtools import transform
+from ..images.transforms import transform
 from ..noise.diffusion import q_sample
 
 def evaluate_regression(regression):

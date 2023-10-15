@@ -1,6 +1,8 @@
 from matplotlib import pyplot as plt
+
+from ..images.transforms import transform
 from ..dataset.mydataset import dataset
-from ..dataset.imgtools import transform, reverse_transform
+from ..images.transforms import reverse_transform
 from ..utils.constants import default_device
 from ..noise.denoising import fast_p_sample
 
