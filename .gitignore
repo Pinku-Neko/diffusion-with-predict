@@ -1,8 +1,9 @@
 # ignore intermediate pickles and dataset, images
 *.pkl
-*.pth
+*.pt
 *.png
 *.gif
+*.gif*
 
 # ignore local folders
 /.vscode/
