@@ -43,5 +43,5 @@ def predict(noise, regression=None):
     if regression is not None:
         regression.eval()
         with torch.no_grad():
-            timestep = (regression(noise).squeeze(1) * const.timesteps).to(torch.int)
+            timestep = (regression(noise).squeeze(0) * const.timesteps).to(torch.int)
     return timestep

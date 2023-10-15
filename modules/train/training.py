@@ -2,7 +2,7 @@
 training
 '''
 # for train_MLP
-from torch import nn, optim, randint, no_grad, sqrt, arange
+from torch import nn, optim, randint, no_grad, sqrt, arange, clamp
 from tqdm.auto import tqdm
 from ..utils import constants as const
 from ..noise.diffusion import q_sample
@@ -86,7 +86,8 @@ def train_MLP(filename=None, num_epochs=None, layer_dim=None, lr=None, batch_siz
             # t = record_time("move to device",t)
 
             # noisy images
-            noise_samples = q_sample(image_samples, t_samples)
+            # clamp [-1,1]
+            noise_samples = clamp(q_sample(image_samples, t_samples),min=-1,max=1)
             # t = record_time("generate q_samples",t)
 
             # Forward pass
@@ -121,7 +122,7 @@ def train_MLP(filename=None, num_epochs=None, layer_dim=None, lr=None, batch_siz
                     f"{step} steps trained. Loss in time step: {error_timestep}; True loss: {avg_train_loss}")
 
         print(
-            f"{step} step trained. Loss in time step: {error_timestep}; True loss: {avg_train_loss}")
+            f"{step} steps trained. Loss in time step: {error_timestep}; True loss: {avg_train_loss}")
         # evaluate model using test dataset in this epoch
         test_loss = 0.
 

@@ -9,7 +9,7 @@ import torch
 from tqdm.auto import tqdm
 from ..utils.constants import timesteps, default_device
 from ..dataset.init import dataset
-from ..images.transforms import transform
+from ..images.transforms import transform,reverse_transform
 from ..noise.diffusion import q_sample
 
 def evaluate_regression(regression):
@@ -26,7 +26,7 @@ def evaluate_regression(regression):
     # predict t and compare with true t
     # store difference
     regression.eval()
-    num_samples = 128
+    num_samples = 16
 
     # indices for image samples
     indices = random.sample(range(0,10000), num_samples)
@@ -43,11 +43,11 @@ def evaluate_regression(regression):
         time = torch.tensor([i]).repeat(num_samples)
 
         # calculate noise
-        noise = q_sample(image_tensors.to(default_device),time)
+        noise_batch = torch.clamp(q_sample(image_tensors.to(default_device),time),min=-1,max=1)
         
         # pass to model
         with torch.no_grad():
-            predict = regression(noise)
+            predict = regression(noise_batch)
         predict = (predict * timesteps).squeeze().detach().to('cpu')
 
         # store difference
