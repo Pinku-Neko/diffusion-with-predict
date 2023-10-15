@@ -9,14 +9,13 @@ from ..utils.constants import timesteps, betas, sqrt_one_minus_alphas_cumprod,sq
 # tolerance for fast p sample
 default_tolerance = 5
 
-def p_sample(model, x, t, t_index):
+def p_sample(model, x, t):
     '''
     denoise image tensor with time step t to t-1 given diffusion model \n
     -precondition: model, x and t are on the same device \n
     -model: diffusion model, unet \n
     -x: image tensors as input of model \n
     -t: noise level, each element a tensor shape (1) as input of model \n
-    -t_index: the item of tensor t? \n
     -return: an image tensor with noise level t-1
     '''
     # switch to eval mode (regarding deactivate batch norm etc.)
@@ -37,7 +36,7 @@ def p_sample(model, x, t, t_index):
         x - betas_t * predict_noise / sqrt_one_minus_alphas_cumprod_t
     )
 
-    if t_index == 0:
+    if t.item() == 0:
         return model_mean
     else:
         posterior_variance_t = extract(posterior_variance, t, x.shape)
