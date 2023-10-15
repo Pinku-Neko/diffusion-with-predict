@@ -21,7 +21,7 @@ def main():
     regression_name = "./saved_models/regression_best_256_0.0001.pt"
 
     # load models
-    diffusion, regression = init_models(regression_layer_dim=128)
+    diffusion, regression = init_models(regression_layer_dim=256)
     # diffusion = load_model(diffusion, diffusion_name)
     # regression = load_model(regression, regression_name)
 
@@ -36,8 +36,8 @@ def main():
     # imgtools.compare_grayscale_animations(anim_normal,anim_predict,"restore_comparison.gif")
 
     # do training
-    train_MLP(num_epochs=2000, layer_dim=128,
-              lr=1e-4, batch_size=128, tolerance=2000)
+    train_MLP(num_epochs=2000, layer_dim=256,
+              lr=1e-5, batch_size=128, tolerance=2000)
 
     # do test
     # training.test_power_training()

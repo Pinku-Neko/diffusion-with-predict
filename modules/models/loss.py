@@ -1,7 +1,7 @@
 '''
 custom loss function
 '''
-from torch import nn,tensor,int,sum,sqrt
+from torch import nn,tensor,int,sqrt
 from ..utils.constants import default_device, timesteps
 
 class weighted_MSE_loss(nn.Module):

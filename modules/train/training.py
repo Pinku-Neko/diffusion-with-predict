@@ -49,7 +49,8 @@ def train_MLP(filename=None, num_epochs=None, layer_dim=None, lr=None, batch_siz
         batch_size=batch_size, transform=transform)
 
     # Define the loss function (Mean Squared Error) and the optimizer (e.g., SGD)
-    criterion = weighted_MSE_loss(const.default_MSE_weights)
+    criterion = nn.MSELoss()
+    # criterion = weighted_MSE_loss(const.default_MSE_weights)
 
     if lr is None:
         lr = const.default_learning_rate
@@ -66,8 +67,7 @@ def train_MLP(filename=None, num_epochs=None, layer_dim=None, lr=None, batch_siz
         num_epochs = const.default_training_epochs
 
     # train loop
-    for epoch in tqdm(range(num_epochs), desc=f"dim: {layer_dim}; lr: {lr}"):
-        print(f"layer dim: {layer_dim}. lr: {lr}")
+    for epoch in tqdm(range(num_epochs), desc=f"regression layer dim: {layer_dim}; lr: {lr}"):
         total_train_loss = 0.
         for step, image_samples in enumerate(train_loader):
             # in case each sample has different size
