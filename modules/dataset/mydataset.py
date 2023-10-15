@@ -1,18 +1,27 @@
-'''
-defines the dataset and loads it in the project \n
-FIXME: first time loading will raise error because of circular dependencies
-'''
+# generating data set and data loader
+from torch.utils.data import Dataset
 
-# loading dataset
-from datasets import load_dataset
+class Image_Dataset(Dataset):
+    '''
+    generate a set of images and transformed if function is given
+    -images: PIL images
+    -transform: composed function using torchvision.transforms
+    -return: a set of (transformed) images acessible with index
+    '''
+    def __init__(self, images, transform=None):
+        self.images = images
+        self.transform = transform
 
-dataset = load_dataset('fashion_mnist')
-'''this data set has 60k 28x28 greyscale images for train and 10k of same size for testing'''
+    def __len__(self):
+        return len(self.images)
 
+    def __getitem__(self, idx):
+        image = self.images[idx]
 
-print("dataset loaded")
+        if self.transform:
+            image = self.transform(image)
 
-
+        return image
 
 
 

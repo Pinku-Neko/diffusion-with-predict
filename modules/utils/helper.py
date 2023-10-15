@@ -1,6 +1,7 @@
 '''
 helper functions for other modules
 '''
+from inspect import isfunction
 import time
 import numpy as np
 
@@ -46,3 +47,18 @@ def generate_custom_array(value_interval_left, value_interval_right, separate, l
         result_array = result_array / result_array.sum() * len(result_array)
 
     return result_array
+
+
+def exists(x):
+    return x is not None
+
+
+def default(val, d):
+    '''
+    return val, if val exists \n
+    or if d is a function, return result of function \n
+    or return d itself
+    '''
+    if exists(val):
+        return val
+    return d() if isfunction(d) else d

@@ -3,6 +3,8 @@ handles model manipulation
 '''
 
 # init models
+from modules.utils import constants as const
+import torch
 from .components import Unet,unet_output_dim
 from .model import Advanced_Regression
 from ..utils.constants import image_size,default_device
@@ -27,3 +29,12 @@ def init_models(regression_layer_dim):
         default_device), regression.to(default_device)
 
     return diffusion, regression
+
+
+def predict(noise, t, regression=None):
+    timestep = torch.tensor([t]).to(const.default_device)
+    if regression is not None:
+        regression.eval()
+        with torch.no_grad():
+            timestep = (regression(noise).squeeze(1) * const.timesteps).to(torch.int)
+    return timestep
