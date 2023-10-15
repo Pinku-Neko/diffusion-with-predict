@@ -204,16 +204,16 @@ def test_power_training():
     tolerance = 10
 
     # init model
-    model = Advanced_Regression().to(const.default_device)
+    model = Advanced_Regression(layer_dim=128).to(const.default_device)
 
     # input 1 image
-    test_image = transform(dataset['train']['image'][0]).to(const.default_device)
+    test_image = dataset['train']['image'][0]
 
     # ? generate all noise levels of image
     batch_size = const.timesteps
     t_samples = arange(const.timesteps).view(const.timesteps, 1).to(const.default_device)
     train_dataset = Single_Image_Dataset(
-        image=test_image, num_samples=const.timesteps)
+        image=test_image, transform=transform)
     train_loader = DataLoader(
         train_dataset, batch_size=batch_size, shuffle=True)
 
@@ -225,14 +225,14 @@ def test_power_training():
     previous_loss = 200.
     # train
     # train loop
-    for epoch in tqdm(range(1000000)):
+    for epoch in tqdm(range(1000000),desc=f"regression layer dim: 128; lr: 1e-4"):
         # init previous loss
         total_loss = 0.
         avg_loss = 0.
         for step, batch in enumerate(train_loader):
             # move batch to device
             batch = batch.to(const.default_device)
-            batch = batch.unsqueeze(1)
+            batch = clamp(batch.unsqueeze(1),min=-1,max=1)
 
             # Forward pass
             outputs = model(batch)
@@ -281,5 +281,5 @@ def test_power_training():
             print("good job! saving and call it a day")
             break
 
-    save_model(model=model, epoch_number=epoch, loss=loss.item())
+    # save_model(model=model, epoch_number=epoch, loss=loss.item())
     print('training finished')

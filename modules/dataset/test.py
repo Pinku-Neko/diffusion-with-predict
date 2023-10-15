@@ -2,9 +2,9 @@
 contains the dataset for testing the model
 '''
 
-from torch import tensor
+from torch import tensor,arange
 from torch.utils.data import Dataset
-from ..utils.constants import timesteps
+from ..utils.constants import timesteps,default_device
 
 class Single_Image_Dataset(Dataset):
     '''
@@ -15,14 +15,14 @@ class Single_Image_Dataset(Dataset):
     '''
     def __init__(self, image, transform):
         # all images require a transform
-        image = transform(img=image)
+        image = transform(img=image).to(default_device)
         
         # 2 dimensions for dimensions of 2-D image tensor
         self.images = image.repeat(timesteps,1,1)
 
         # make each image tensor noisy from 0 to timesteps-1
         from modules.noise.diffusion import q_sample
-        self.images = q_sample(self.images,range(timesteps))
+        self.images = q_sample(self.images,arange(start=0,end=timesteps,device=default_device))
 
     def __len__(self):
         # not access timesteps in case bugs occur 
