@@ -277,7 +277,7 @@ def test_power_training():
                 # no storing model
 
         # reach desired loss
-        if avg_loss <= 6.25e-6:
+        if avg_loss <= 6.25e-7:
             print("good job! saving and call it a day")
             break
 
