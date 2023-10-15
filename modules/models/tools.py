@@ -31,7 +31,14 @@ def init_models(regression_layer_dim):
     return diffusion, regression
 
 
-def predict(noise, t, regression=None):
+def predict(noise, regression=None):
+    '''
+    predict the timestep based on noise input \n
+    -noise: start noise \n
+    -regression: regression model for predit \n
+    -return: timestep of predict if regression is given, otherwise last element of timesteps
+    '''
+    t = const.timesteps-1
     timestep = torch.tensor([t]).to(const.default_device)
     if regression is not None:
         regression.eval()

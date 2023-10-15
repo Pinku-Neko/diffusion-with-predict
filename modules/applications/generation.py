@@ -40,8 +40,7 @@ def generate_animation(diffusion, regression=None, noise = None):
         noise = random_noise(image_shape)
     
     # use regression to predict if regression exists, otherwise use last t
-    t = const.timesteps-1
-    timestep = predict(noise, t, regression)
+    timestep = predict(noise, regression)
     
     images = []
     # loop p sample
