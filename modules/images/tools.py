@@ -17,7 +17,7 @@ def animate_grayscale_images(images):
     animate = animation.ArtistAnimation(fig, ims, interval=50, blit=True, repeat_delay=1000)
     plt.show()
 
-def compare_grayscale_animations(images_long, images_short):
+def compare_grayscale_animations(images_long, images_short, filename):
     '''
     outputs 2 animation of images synchronized \n
     -images_long: images with more frames \n
@@ -50,6 +50,6 @@ def compare_grayscale_animations(images_long, images_short):
 
     # Create ArtistAnimations for both sets of images
     animate = animation.ArtistAnimation(fig, ims, interval=25, blit=True, repeat_delay=1000)
-    animate.save("comparison.gif")
+    animate.save(filename)
 
     plt.show()

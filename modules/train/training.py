@@ -9,13 +9,13 @@ from ..noise.diffusion import q_sample
 from ..models.model import Advanced_Regression
 from ..models.IO import save_model, load_model
 from ..models.loss import weighted_MSE_loss
-from ..dataset.utils import prepare_dataset
+from ..dataset.tools import prepare_dataset
 from ..images.transforms import transform
 
 # for testing model
 from torch.utils.data import DataLoader
-from ..dataset.testdataset import Single_Image_Dataset
-from ..dataset.utils import dataset
+from ..dataset.test import Single_Image_Dataset
+from ..dataset.init import dataset
 
 # for evaluating performance
 from ..utils.helper import record_time

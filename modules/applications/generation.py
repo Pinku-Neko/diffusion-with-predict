@@ -10,7 +10,7 @@ from ..utils.helper import exists
 from ..noise.denoising import p_sample
 from ..images.transforms import reverse_transform
 
-def double_generation(diffusion, regression):
+def double_generate(diffusion, regression, noise=None):
     '''
     generate 2 lists of images using diffusion from same noise \n
     -diffusion: diffusion model \n
@@ -18,8 +18,9 @@ def double_generation(diffusion, regression):
     -return: images generated from begin and from predict respectively
     '''
     # make 2 images with same noise
-    image_shape = (const.image_size,const.image_size)
-    noise = random_noise(image_shape)
+    if noise is None:
+        image_shape = (const.image_size,const.image_size)
+        noise = random_noise(image_shape)
     images_normal = generate_animation(diffusion,noise=noise)
     images_predict = generate_animation(diffusion,regression,noise)
 
@@ -52,13 +53,13 @@ def generate_animation(diffusion, regression=None, noise = None):
 
     return images
 
-def generate_image(diffusion, regression=None):
+def generate_image(diffusion, regression=None, noise=None):
     '''
     generate an image generated from diffusion model \n
     -diffusion: diffusion model \n
     -regression: regression model to predict \n
     -return: fully generated image if regression given, otherwise image generated with predict
     '''
-    images = generate_animation(diffusion, regression=None)
+    images = generate_animation(diffusion, regression=None,noise=noise)
     return images[-1]
 

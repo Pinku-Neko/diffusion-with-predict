@@ -6,7 +6,7 @@ FIXME: consider using json config file to store (part of) these
 import torch
 import torch.nn.functional as F
 from .helper import generate_custom_array
-from ..dataset.mydataset import dataset
+from ..dataset.init import dataset
 
 # total amount of time steps in diffusion
 timesteps = 200
