@@ -37,7 +37,7 @@ def generate_animation(diffusion, regression=None, noise = None):
     '''
     # generate pure noise
     if noise is None:
-        image_shape = (const.image_size,const.image_size)
+        image_shape = (3,const.image_size,const.image_size)
         noise = random_noise(image_shape)
     
     # use regression to predict if regression exists, otherwise use last t
