@@ -39,6 +39,7 @@ def predict(noise, regression=None):
     -return: timestep of predict if regression is given, otherwise last element of timesteps
     '''
     t = const.timesteps-1
+    t = 100-1
     timestep = torch.tensor([t]).to(const.default_device)
     if regression is not None:
         regression.eval()

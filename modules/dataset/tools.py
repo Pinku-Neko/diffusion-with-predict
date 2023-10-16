@@ -15,12 +15,12 @@ def prepare_dataset(batch_size, transform):
     '''
     # train data loader
     train_dataset = Image_Dataset(
-        images=dataset['train']['image'], transform=transform)
+        images=dataset['train']['img'], transform=transform)
     train_loader = DataLoader(train_dataset, batch_size=batch_size, shuffle=True)
 
     # test data loader
     test_dataset = Image_Dataset(
-        images=dataset['test']['image'], transform=transform)
+        images=dataset['test']['img'], transform=transform)
     test_loader = DataLoader(test_dataset, batch_size=batch_size, shuffle=True)
 
     return train_loader, test_loader
