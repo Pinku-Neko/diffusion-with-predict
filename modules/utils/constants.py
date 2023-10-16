@@ -9,7 +9,7 @@ from .helper import generate_custom_array
 from ..dataset.init import dataset
 
 # total amount of time steps in diffusion
-timesteps = 200
+timesteps = 1000
 
 # determine which device we run
 default_device = "cuda" if torch.cuda.is_available() else "cpu"

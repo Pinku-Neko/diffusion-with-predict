@@ -48,7 +48,7 @@ def train_diffusion(filename=None, num_epochs=None, lr=None, batch_size=None, to
     # load trained model
     old_epoch = 0
     if filename is not None:
-        model, old_epoch, previous_loss = load_model(
+        model = load_model(
             model=model, filename=filename)
     best_loss = previous_loss
 
@@ -80,9 +80,9 @@ def train_diffusion(filename=None, num_epochs=None, lr=None, batch_size=None, to
             # t = record_time("generate q_samples",t)
 
             # Forward pass
-            predict_denoise = model(noise_samples,t_samples)
+            predict_denoise = model(noise_samples, t_samples)
             # t = record_time("pass samples to model",t)
-
+            
             # Compute the loss
             loss = criterion(predict_denoise, noise_samples)
             # t = record_time("compute loss",t)
@@ -110,30 +110,29 @@ def train_diffusion(filename=None, num_epochs=None, lr=None, batch_size=None, to
         test_loss = 0.
 
         # calculate test loss and see performance
-        with no_grad():
-            for step, eval_samples in enumerate(test_loader):
-                # in case each sample has different size
-                batch_size = len(eval_samples)
+        for step, eval_samples in enumerate(test_loader):
+            # in case each sample has different size
+            batch_size = len(eval_samples)
 
-                # sample random t
-                t_samples = randint(0, const.timesteps, (batch_size,),
-                                    device=const.default_device)
+            # sample random t
+            t_samples = randint(0, const.timesteps, (batch_size,),
+                                device=const.default_device)
 
-                # move to device
-                eval_samples, t_samples = eval_samples.to(
-                    const.default_device), t_samples.to(const.default_device)
+            # move to device
+            eval_samples, t_samples = eval_samples.to(
+                const.default_device), t_samples.to(const.default_device)
 
-                # noisy images
-                eval_noise_samples = q_sample(eval_samples, t_samples)
+            # noisy images
+            eval_noise_samples = clamp(q_sample(eval_samples, t_samples),min=-1,max=1)
 
-                # Forward pass
-                predict_denoise = model(eval_noise_samples, t_samples)
+            # Forward pass
+            predict_denoise = model(eval_noise_samples, t_samples)
 
-                # Compute the loss
-                loss = criterion(predict_denoise, eval_noise_samples)
+            # Compute the loss
+            loss = criterion(predict_denoise, eval_noise_samples)
 
-                # accumulate loss
-                test_loss += loss
+            # accumulate loss
+            test_loss += loss
 
         avg_test_loss = test_loss / len(test_loader)
         print(

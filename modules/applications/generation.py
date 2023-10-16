@@ -2,6 +2,7 @@
 generate images using normal p_sample and with predict
 '''
 
+from torch import no_grad
 from tqdm.auto import tqdm
 from modules.images.tensors import random_noise
 from modules.models.tools import predict
@@ -45,8 +46,10 @@ def generate_animation(diffusion, regression=None, noise = None):
     
     images = []
     # loop p sample
+    diffusion.eval()
     for i in tqdm(reversed(range(timestep.item()+1)),desc="loop p sampling",total=timestep.item()+1):
-        noise = p_sample(diffusion,noise,timestep)
+        with no_grad():
+            noise = diffusion(noise, timestep)
         timestep -= 1
         image = reverse_transform(noise.squeeze(0).to('cpu'))
         images.append(image)
