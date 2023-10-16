@@ -322,4 +322,8 @@ class Unet(nn.Module):
         return self.final_conv(x)
 
 # FIXME:hard coded, need to be adjusted
-unet_output_dim = 1*112*7*7
+# for 1 channel 28x28
+# unet_output_dim = 1*112*7*7
+
+# for 3 channels 32x32
+unet_output_dim = 1*128*8*8

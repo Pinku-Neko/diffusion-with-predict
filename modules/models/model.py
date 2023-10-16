@@ -37,7 +37,7 @@ class Advanced_Regression(nn.Module):
         super().__init__()
         self.unet = Unet(
             dim=image_size,
-            channels=1,  # here 1 as it is greyscale
+            channels=3,  # here 3 using rgb
             dim_mults=(1, 2, 4,))
         self.mlp = Regression(input_dim=unet_output_dim, layer_dim=layer_dim)
 

@@ -22,7 +22,7 @@ def main():
     regression_name = "./saved_models/regression_best_256_0.0001.pt"
 
     # load models
-    diffusion, _ = init_models(regression_layer_dim=256)
+    diffusion, _ = init_models(regression_layer_dim=128)
     # diffusion = load_model(diffusion, diffusion_name)
     # regression = load_model(regression, regression_name)
 
@@ -42,11 +42,11 @@ def main():
     # imgtools.animate_grayscale_images(noise_animation)
 
     # do training MLP
-    # train_MLP(num_epochs=2000, layer_dim=512,
-    #           lr=1e-4, batch_size=128, tolerance=2000)
+    train_MLP(num_epochs=2000, layer_dim=128,
+              lr=1e-4, batch_size=128, tolerance=2000)
 
     # do training diffusion model
-    train_diffusion(num_epochs=2000,lr=1e-4,batch_size=128,tolerance=2000)
+    # train_diffusion(num_epochs=2000,lr=1e-4,batch_size=128,tolerance=2000)
 
 
     # do test
