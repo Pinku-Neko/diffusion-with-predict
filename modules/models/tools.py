@@ -18,7 +18,7 @@ def init_models(regression_layer_dim):
     '''
     diffusion = Unet(
         dim=image_size,
-        channels=1,  # here 1 as it is greyscale
+        channels=3,  # here 3 as rgb
         dim_mults=(1, 2, 4,))
 
     # Create an instance of the MLP model
@@ -31,15 +31,17 @@ def init_models(regression_layer_dim):
     return diffusion, regression
 
 
-def predict(noise, regression=None):
+def predict(noise, regression=None, true_t=None):
     '''
     predict the timestep based on noise input \n
     -noise: start noise \n
     -regression: regression model for predit \n
     -return: timestep of predict if regression is given, otherwise last element of timesteps
     '''
-    t = const.timesteps-1
-    t = 100-1
+    if true_t is None:
+        t = const.timesteps-1
+    else:
+        t = true_t
     timestep = torch.tensor([t]).to(const.default_device)
     if regression is not None:
         regression.eval()
