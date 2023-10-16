@@ -13,8 +13,11 @@ def animate_grayscale_images(images):
     for i in range(len(images)):
         im = plt.imshow(images[i], cmap="gray", animated=True)
         ims.append([im])
+    # add buffer
+    for i in range(50):
+        ims.append([plt.imshow(images[-1], cmap="gray", animated=True)])
 
-    animate = animation.ArtistAnimation(fig, ims, interval=50, blit=True, repeat_delay=1000)
+    animate = animation.ArtistAnimation(fig, ims, interval=25, blit=True, repeat_delay=1000)
     plt.show()
 
 def compare_grayscale_animations(images_long, images_short, filename):

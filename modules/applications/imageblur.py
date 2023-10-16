@@ -3,11 +3,20 @@ get noisy image
 '''
 
 from torch import tensor
-from ..utils.constants import default_device
+from ..utils.constants import default_device,timesteps
 from ..images.transforms import reverse_transform
 from ..images.transforms import transform
 from ..noise.diffusion import q_sample
 
+
+def animate_noisy_image(input_image, time=None):
+    images = []
+    if time is None:
+        time = timesteps
+    for i, step in enumerate(range(time)):
+        result_image = get_noisy_image(input_image,i)
+        images.append(result_image)
+    return images
 
 def get_noisy_image(image, t):
     '''
