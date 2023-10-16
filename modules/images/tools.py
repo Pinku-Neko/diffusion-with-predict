@@ -10,7 +10,7 @@ def plot_image(image,is_gray):
     plt.show()
 
 
-def animate_images(images,is_gray):
+def animate_images(images,is_gray,filename):
     fig = plt.figure()
     ims = []
     for i in range(len(images)):
@@ -27,6 +27,7 @@ def animate_images(images,is_gray):
             ims.append([plt.imshow(images[-1], animated=True)])
 
     animate = animation.ArtistAnimation(fig, ims, interval=25, blit=True, repeat_delay=1000)
+    animate.save(filename)
     plt.show()
 
 def compare_grayscale_animations(images_long, images_short, filename, is_gray):
