@@ -126,7 +126,8 @@ def train_diffusion(filename=None, num_epochs=None, lr=None, batch_size=None, to
             eval_noise_samples = clamp(q_sample(eval_samples, t_samples),min=-1,max=1)
 
             # Forward pass
-            predict_denoise = model(eval_noise_samples, t_samples)
+            with no_grad():
+                predict_denoise = model(eval_noise_samples, t_samples)
 
             # Compute the loss
             loss = criterion(predict_denoise, eval_noise_samples)
