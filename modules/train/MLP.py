@@ -181,7 +181,7 @@ def train_MLP(filename=None, num_epochs=None, layer_dim=None, lr=None, batch_siz
             save_model(model=model, layer_dim=layer_dim, lr=lr)
 
         # reach desired loss
-        if avg_test_loss <= 6.25e-6:
+        if avg_test_loss <= (1/200)**2:
             print("good job! saving and call it a day")
             break
 

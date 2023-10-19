@@ -30,7 +30,7 @@ default_learning_rate = 1e-4
 default_training_tolerance = 10
 
 # default weights for special MES loss
-default_MSE_weights = generate_custom_array(3,1,timesteps/4,timesteps,normalize=True)
+default_MSE_weights = generate_custom_array(3,1,int(timesteps/4),timesteps,normalize=True)
 
 # image size, an int value
 # selection for finding image_size. Assume all images are same size and square
