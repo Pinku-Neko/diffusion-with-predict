@@ -2,6 +2,7 @@
 helper functions for other modules
 '''
 from inspect import isfunction
+import torch
 import time
 import numpy as np
 
@@ -62,3 +63,33 @@ def default(val, d):
     if exists(val):
         return val
     return d() if isfunction(d) else d
+
+def normalize(tensor, range=None):
+    '''
+    normalize tensor [low,high], to [min,max] \n
+    default min max is [-1,1] \n
+    -tensor: tensor \n
+    -range: list as interval [min,max]
+    '''
+    # lacking case where only one is 
+    if range is None:
+        min, max = -1, 1
+    else:
+        min, max = range
+
+    low = torch.min(tensor)
+    high = torch.min(tensor)
+
+    # move to 0
+    result = tensor - low
+
+    # divide by (high-low)
+    result = result / (high-low)
+
+    # multiply with (max-min)
+    result = result * (max-min)
+
+    # move to [min,max]
+    result = result - min
+
+    return result

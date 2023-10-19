@@ -86,8 +86,7 @@ def train_MLP(filename=None, num_epochs=None, layer_dim=None, lr=None, batch_siz
             # t = record_time("move to device",t)
 
             # noisy images
-            # clamp [-1,1]
-            noise_samples = clamp(q_sample(image_samples, t_samples),min=-1,max=1)
+            noise_samples = q_sample(image_samples, t_samples)
             # t = record_time("generate q_samples",t)
 
             # Forward pass
@@ -127,33 +126,33 @@ def train_MLP(filename=None, num_epochs=None, layer_dim=None, lr=None, batch_siz
         test_loss = 0.
 
         # calculate test loss and see performance
-        with no_grad():
-            for step, eval_samples in enumerate(test_loader):
-                # in case each sample has different size
-                batch_size = len(eval_samples)
+        for step, eval_samples in enumerate(test_loader):
+            # in case each sample has different size
+            batch_size = len(eval_samples)
 
-                # sample random t
-                t_samples = randint(0, const.timesteps, (batch_size, 1),
-                                    device=const.default_device)
+            # sample random t
+            t_samples = randint(0, const.timesteps, (batch_size, 1),
+                                device=const.default_device)
 
-                # move to device
-                eval_samples, t_samples = eval_samples.to(
-                    const.default_device), t_samples.to(const.default_device)
+            # move to device
+            eval_samples, t_samples = eval_samples.to(
+                const.default_device), t_samples.to(const.default_device)
 
-                # noisy images
-                eval_noise_samples = q_sample(eval_samples, t_samples)
-
+            # noisy images
+            eval_noise_samples = q_sample(eval_samples, t_samples)
+            
+            with no_grad():
                 # Forward pass
                 outputs = model(eval_noise_samples)
 
-                # normalize t
-                t_samples = t_samples / float(const.timesteps)
+            # normalize t
+            t_samples = t_samples / float(const.timesteps)
 
-                # Compute the loss
-                loss = criterion(outputs, t_samples)
+            # Compute the loss
+            loss = criterion(outputs, t_samples)
 
-                # accumulate loss
-                test_loss += loss
+            # accumulate loss
+            test_loss += loss
 
         avg_test_loss = test_loss / len(test_loader)
         error_timestep = round(
