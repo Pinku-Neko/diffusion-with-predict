@@ -7,5 +7,5 @@ from ..dataset.init import dataset
 def get_image(index = None):
     if index is None:
         index = int(random.random()*len(dataset['test']['img']))
-    return dataset['test']['img'][index]
+    return dataset['train']['img'][index]
     

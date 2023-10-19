@@ -49,8 +49,8 @@ def train_MLP(filename=None, num_epochs=None, layer_dim=None, lr=None, batch_siz
         batch_size=batch_size, transform=transform)
 
     # Define the loss function (Mean Squared Error) and the optimizer (e.g., SGD)
-    criterion = nn.MSELoss()
-    # criterion = weighted_MSE_loss(const.default_MSE_weights)
+    # criterion = nn.MSELoss()
+    criterion = weighted_MSE_loss(const.default_MSE_weights)
 
     if lr is None:
         lr = const.default_learning_rate
