@@ -9,7 +9,7 @@ from .helper import generate_custom_array
 from ..dataset.init import dataset
 
 # total amount of time steps in diffusion
-timesteps = 1000
+timesteps = 200
 
 # determine which device we run
 default_device = "cuda" if torch.cuda.is_available() else "cpu"
@@ -18,7 +18,7 @@ default_device = "cuda" if torch.cuda.is_available() else "cpu"
 default_batch_size = 128
 
 # training epochs
-default_training_epochs = 200
+default_training_epochs = 2000
 
 # default regression layer dim
 default_layer_dim = 128
