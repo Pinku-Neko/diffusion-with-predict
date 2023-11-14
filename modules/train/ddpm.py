@@ -26,6 +26,7 @@ def train_diffusion(filename=None, num_epochs=None, lr=None, batch_size=None, to
     previous_loss = 1024.  # TODO: find better number
     improvement_threshold = 0
     no_improvement_count = 0
+    device = const.default_device
     if tolerance is None:
         tolerance = const.default_training_tolerance
 
@@ -34,24 +35,23 @@ def train_diffusion(filename=None, num_epochs=None, lr=None, batch_size=None, to
     dim=const.image_size,
     channels=3,
     dim_mults=(1, 2, 4,)
-    ).to(const.default_device)
+    ).to(device)
 
     # init data and test loader for input
     if batch_size is None:
         batch_size = const.default_batch_size
     train_loader, test_loader = prepare_dataset(
-        batch_size=batch_size, transform=transform)
+        batch_size=batch_size, transform=transform,drop_last=True, num_workers=0)
 
     # Define the loss function (Mean Squared Error) and the optimizer (e.g., SGD)
-    criterion = nn.SmoothL1Loss()
+    criterion = nn.MSELoss()
     # criterion = weighted_MSE_loss(const.default_MSE_weights)
 
     if lr is None:
         lr = const.default_learning_rate
-    optimizer = optim.Adam(model.parameters(), lr=lr)
+    optimizer = optim.AdamW(model.parameters(), lr=lr)
 
     # load trained model
-    old_epoch = 0
     if filename is not None:
         model = load_model(
             model=model, filename=filename)
@@ -65,18 +65,19 @@ def train_diffusion(filename=None, num_epochs=None, lr=None, batch_size=None, to
         total_train_loss = 0.
         for step, image_samples in enumerate(train_loader):
             # in case each sample has different size
-            batch_size = len(image_samples)
+            # batch_size = len(image_samples)
+            # step = step.to(device)
 
             # t = record_time("make batch")
 
             # sample random t
             t_samples = randint(0, const.timesteps, (batch_size,),
-                                device=const.default_device)
+                                device=device)
             # t = record_time("sample t's",t)
 
             # move to device
             image_samples, t_samples = image_samples.to(
-                const.default_device), t_samples.to(const.default_device)
+                device), t_samples.to(device)
             # t = record_time("move to device",t)
 
             # noisy images
@@ -91,6 +92,7 @@ def train_diffusion(filename=None, num_epochs=None, lr=None, batch_size=None, to
             # Compute the loss
             loss = criterion(predict_noise, noise)
             # t = record_time("compute loss",t)
+
 
             # Backpropagation and optimization
             optimizer.zero_grad()
@@ -117,15 +119,16 @@ def train_diffusion(filename=None, num_epochs=None, lr=None, batch_size=None, to
         # calculate test loss and see performance
         for step, eval_samples in enumerate(test_loader):
             # in case each sample has different size
-            batch_size = len(eval_samples)
+            # batch_size = len(eval_samples)
+            # step = step.to(device)
 
             # sample random t
             t_samples = randint(0, const.timesteps, (batch_size,),
-                                device=const.default_device)
+                                device=device)
 
             # move to device
             eval_samples, t_samples = eval_samples.to(
-                const.default_device), t_samples.to(const.default_device)
+                device), t_samples.to(device)
 
             # noisy images
             noise = randn_like(eval_samples)
@@ -183,13 +186,15 @@ def test_power_training():
     no_improvement_count = 0
     large_number = 1000000
     tolerance = large_number
+    batch_size = const.default_batch_size
+    device = const.default_device
 
     # init model
     model = Unet(
     dim=const.image_size,
     channels=3,
     dim_mults=(1, 2, 4,)
-    ).to(const.default_device)
+    ).to(device)
 
     # input 1 image
     test_image = dataset['train']['img'][0]
@@ -198,7 +203,7 @@ def test_power_training():
     train_dataset = Diff_Single_Image_Dataset(
         image=test_image, transform=transform)
     train_loader = DataLoader(
-        train_dataset, batch_size=16, shuffle=True)
+        train_dataset, batch_size=batch_size, shuffle=True,drop_last=True,num_workers=2)
 
     # as batch, train with Adam on MSE
 
@@ -215,10 +220,12 @@ def test_power_training():
         avg_loss = 0.
         for step, batch in enumerate(train_loader):
             # move batch to device
-            batch = batch.to(const.default_device)
+            step = step.to(device)
+            batch = batch.to(device)
             
-            t_samples = randint(0, const.timesteps, (len(batch),),
-                                device=const.default_device)
+
+            t_samples = randint(0, const.timesteps, (batch_size,),
+                                device=device)
             # noisy images
             noise = randn_like(batch)
             noise_samples = q_sample(batch, t_samples, noise=noise)
