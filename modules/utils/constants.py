@@ -15,10 +15,10 @@ timesteps = 1000
 default_device = "cuda" if torch.cuda.is_available() else "cpu"
 
 # batch size of data loader
-default_batch_size = 100
+default_batch_size = 128
 
 # training epochs
-default_training_epochs = 1000
+default_training_epochs = 200
 
 # default regression layer dim
 default_layer_dim = 128
